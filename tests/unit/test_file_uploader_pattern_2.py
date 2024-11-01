@@ -1,44 +1,66 @@
 from unittest.mock import patch, Mock, ANY
-from src.file_uploader import upload_file
+from src.file_uploader import upload_file, download_file
 
 
-@patch("src.file_uploader.requests.post")
-def test_upload_file_to_fileio(mock_post):
-    # Arrange
+def test_upload_file():
     file_name = "sample.txt"
-    mock_response = Mock()
-    mock_response.status_code = 200
-    mock_response.json.return_value = {
+    stub_upload_response = {
         "success": True,
-        "status": 200,
-        "id": "716f5780-982c-11ef-90e0-0125ec1afe68",
-        "key": "D6nO3e3yPgst",
-        "path": "/",
-        "nodeType": "file",
-        "name": "sample.txt",
-        "title": None,
-        "description": None,
-        "size": 39,
-        "link": "https://file.io/D6nO3e3yPgst",
-        "private": False,
-        "expires": "2024-11-15T08:36:52.080Z",
-        "downloads": 0,
-        "maxDownloads": 1,
-        "autoDelete": True,
-        "planId": 0,
-        "screeningStatus": "pending",
-        "mimeType": "text/plain",
-        "created": "2024-11-01T08:36:52.080Z",
-        "modified": "2024-11-01T08:36:52.080Z",
+        "link": "https://file.io/TEST",
+        "key": "TEST",
+        "name": file_name,
     }
-    mock_post.return_value = mock_response
 
-    # Act
-    response = upload_file(file_name)
+    with patch("src.file_uploader.requests.post") as mock_post:
+        mock_post_response = Mock()
+        mock_post_response.status_code = 200
+        mock_post_response.json.return_value = stub_upload_response
+        mock_post.return_value = mock_post_response
 
-    # Assert
-    assert response["success"] is True
-    assert response["key"] == "D6nO3e3yPgst"
-    assert response["name"] == file_name
-    mock_post.assert_called_once()
-    mock_post.assert_called_with("https://file.io", files={"file": ANY})
+        response = upload_file(file_name)
+
+        assert response["success"] is True
+        assert response["link"] == "https://file.io/TEST"
+        assert response["name"] == file_name
+        mock_post.assert_called_once_with("https://file.io", files={"file": ANY})
+
+
+def test_upload_and_download_file():
+    file_name = "sample.txt"
+    stub_upload_response = {
+        "success": True,
+        "link": "https://file.io/TEST",
+        "key": "TEST",
+        "name": file_name,
+    }
+    stub_file_content = b"This is the content of the downloaded file."
+
+    with patch("src.file_uploader.requests.post") as mock_post, patch(
+        "src.file_uploader.requests.get"
+    ) as mock_get:
+
+        # Mock upload response
+        mock_post_response = Mock()
+        mock_post_response.status_code = 200
+        mock_post_response.json.return_value = stub_upload_response
+        mock_post.return_value = mock_post_response
+
+        # Upload file and get response
+        upload_response = upload_file(file_name)
+        assert upload_response["success"] is True
+        assert upload_response["link"] == "https://file.io/TEST"
+        mock_post.assert_called_once_with("https://file.io", files={"file": ANY})
+
+        # Mock download response
+        mock_get_response = Mock()
+        mock_get_response.status_code = 200
+        mock_get_response.content = stub_file_content
+        mock_get.return_value = mock_get_response
+
+        # Download file
+        download_file(upload_response["link"], file_name)
+        mock_get.assert_called_once_with("https://file.io/TEST")
+
+        # Assert the file was saved with correct content
+        with open(f"download__{file_name}", "rb") as downloaded_file:
+            assert downloaded_file.read() == stub_file_content
