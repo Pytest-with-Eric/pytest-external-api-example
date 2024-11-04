@@ -1,5 +1,7 @@
+"""Pattern 2 - Mock the Request Library"""
+
 from unittest.mock import patch, Mock, ANY
-from src.file_uploader import upload_file, download_file
+from src.file_uploader import upload_file
 
 
 def test_upload_file():
