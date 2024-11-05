@@ -7,7 +7,7 @@ def upload_file(file_name):
         response.raise_for_status()
         upload_data = response.json()
 
-        if response.status_code == 200 and upload_data.get("success"):
+        if response.status_code == 200:
             print(f"File uploaded successfully. Upload data: {upload_data}")
             return upload_data
         else:
