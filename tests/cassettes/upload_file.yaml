@@ -1,0 +1,57 @@
+interactions:
+- request:
+    body: "--b96f112003f9b1927a5827b05a59f2cb\r\nContent-Disposition: form-data; name=\"file\";
+      filename=\"sample.txt\"\r\n\r\nHello, my name is Eric Sales De Andrade\r\n--b96f112003f9b1927a5827b05a59f2cb--\r\n"
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '185'
+      Content-Type:
+      - multipart/form-data; boundary=b96f112003f9b1927a5827b05a59f2cb
+      User-Agent:
+      - python-requests/2.32.3
+    method: POST
+    uri: https://file.io/
+  response:
+    body:
+      string: '{"success":true,"status":200,"id":"4f403500-9c1c-11ef-bc9d-bfc75c822b94","key":"noeM381ApCUN","path":"/","nodeType":"file","name":"sample.txt","title":null,"description":null,"size":39,"link":"https://file.io/noeM381ApCUN","private":false,"expires":"2024-11-20T08:51:27.429Z","downloads":0,"maxDownloads":1,"autoDelete":true,"planId":0,"screeningStatus":"pending","mimeType":"text/plain","created":"2024-11-06T08:51:27.429Z","modified":"2024-11-06T08:51:27.429Z"}'
+    headers:
+      Access-Control-Allow-Headers:
+      - Cache-Control,Authorization,Content-Type,X-reqed-With,x-requested-with
+      Access-Control-Allow-Methods:
+      - GET,HEAD,POST,PUT,PATCH,DELETE
+      Access-Control-Allow-Origin:
+      - '*'
+      Access-Control-Expose-Headers:
+      - x-file-io-anonymous-access-token
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '463'
+      Content-Type:
+      - application/json; charset=utf-8
+      Date:
+      - Wed, 06 Nov 2024 08:51:27 GMT
+      ETag:
+      - W/"1cf-AqLF7mmVgpRGW3oUWecTK927I2g"
+      Retry-After:
+      - '1'
+      Strict-Transport-Security:
+      - max-age=15724800; includeSubDomains
+      X-RateLimit-Limit:
+      - '1'
+      X-RateLimit-Remaining:
+      - '7'
+      X-RateLimit-Reset:
+      - '2024-11-06T08:51:28.404Z'
+      x-file-io-anonymous-access-token:
+      - eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI0ZjNlODc1MC05YzFjLTExZWYtYmM5ZC1iZmM3NWM4MjJiOTQiLCJpYXQiOjE3MzA4ODMwODcsImV4cCI6MTczMDk2OTQ4N30.Zxxdo2jki9lNT3x7tWhRIOaeJUeT8qQ65AsexFpD-0E
+    status:
+      code: 200
+      message: OK
+version: 1

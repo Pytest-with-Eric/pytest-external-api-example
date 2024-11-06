@@ -18,3 +18,4 @@ def test_upload_file_success():
     # Call the function and verify the response
     result = upload_file("sample.txt")
     assert result == {"success": True, "link": "https://file.io/abc123"}
+    assert responses.calls[0].response.status_code == 200

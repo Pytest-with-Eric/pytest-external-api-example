@@ -1,3 +1,5 @@
 requests
 pytest
 responses
+vcrpy
+wiremock

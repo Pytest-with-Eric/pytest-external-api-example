@@ -1,12 +1,14 @@
-from typing import Protocol
+from abc import ABC, abstractmethod
 import requests
 
 
-class FileUploader(Protocol):
-    def upload_file(self, file_path: str) -> dict: ...
+class FileUploader(ABC):
+    @abstractmethod
+    def upload_file(self, file_path: str) -> dict:
+        raise NotImplementedError("Method not implemented")
 
 
-class FileIOUploader:
+class FileIOUploader(FileUploader):
     API_URL = "https://file.io"
 
     def upload_file(self, file_path: str) -> dict:
