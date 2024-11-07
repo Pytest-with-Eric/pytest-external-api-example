@@ -1,27 +1,41 @@
-from src.file_uploader import upload_file
+from src.file_uploader import upload_file_param
 import pytest
-import requests
 from wiremock.testing.testcontainer import wiremock_container
 from wiremock.constants import Config
 from wiremock.client import *
 
 
-@pytest.fixture  # (1)
+@pytest.fixture
 def wiremock_server():
+    # Set up WireMock server with mappings
     with wiremock_container(secure=False) as wm:
-        Config.base_url = wm.get_url("__admin")  # (2)
+        # Set base URL for WireMock admin (only for WireMock setup purposes)
+        Config.base_url = wm.get_url("__admin")
+
+        # Map the upload endpoint for a successful response
         Mappings.create_mapping(
             Mapping(
-                request=MappingRequest(method=HttpMethods.GET, url="/hello"),
-                response=MappingResponse(status=200, body="hello"),
+                request=MappingRequest(method=HttpMethods.POST, url="/"),
+                response=MappingResponse(
+                    status=200,
+                    json_body={
+                        "success": True,
+                        "link": "https://file.io/TEST",
+                        "key": "TEST",
+                        "name": "sample.txt",
+                    },
+                ),
                 persistent=False,
             )
-        )  # (3)
-        yield wm
+        )
+
+        yield wm  # Yield the WireMock instance for the tests
 
 
-def test_get_hello_world(wiremock_server):  # (4)
-    response = requests.get(wiremock_server.get_url("/hello"))
+def test_upload_file_success(wiremock_server):
+    response = upload_file_param("sample.txt", wiremock_server.get_url("/"))
 
-    assert response.status_code == 200
-    assert response.content == b"hello"
+    assert response["success"] is True
+    assert response["link"] == "https://file.io/TEST"
+    assert response["name"] == "sample.txt"
+    assert response["key"] == "TEST"

@@ -3,3 +3,4 @@ pytest
 responses
 vcrpy
 wiremock
+testcontainers
